@@ -9,7 +9,7 @@ CLARO_URL = 'http://piloto.dacclaro.com.pe/pretups/'
 def do_recharge(phone_number, amount):
     try:
         if current_app.debug: driver = webdriver.Chrome('chromedriver.exe')
-        else: driver = webdriver.PhantomJS('phantomjs.exe')
+        else: driver = webdriver.PhantomJS()
         wait = WebDriverWait(driver, 10)
         driver.get(CLARO_URL)
 
