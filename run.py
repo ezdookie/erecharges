@@ -1,0 +1,1 @@
+from erecharge._cliapp import app

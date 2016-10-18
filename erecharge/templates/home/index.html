@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    <style type="text/css">
+        .container {
+            padding: 0 30px;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.15.1/jquery.validate.min.js"></script>
+    <script type="text/javascript">
+        $('#mobile_recharge').validate({
+            errorClass: 'has-error',
+            rules: {
+                phone_number: {
+                    minlength: 9,
+                    maxlength: 9,
+                }
+            },
+            messages: {
+                amount_options: {
+                    required: '¡No has seleccionado el monto!'
+                },
+                phone_number: {
+                    required: '¡No hay ningún número!',
+                    minlength: $.validator.format('¡Hay menos de {0} dígitos!'),
+                    maxlength: $.validator.format('¡Hay más de {0} dígitos!')
+                }
+            },
+            errorPlacement: function(error, element) {
+                switch ($(element).prop('name')) {
+                    case 'amount_options':
+                        $(element).parents('.form-group').append(error);
+                        error.css('display', 'block'); break;
+                    default: error.insertAfter(element);
+                }
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).parent('.form-group')
+                    .addClass(errorClass).removeClass(validClass);
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parent('.form-group')
+                    .removeClass(errorClass).addClass(validClass);
+            },
+            submitHandler: function(form) {
+                $('button[type="submit"]').attr('disabled', 'disabled');
+                form.submit();
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <form id="mobile_recharge" method="post" action="{{ url_for('home.confirm') }}">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ url_for('home.index') }}">eRecargas</a>
+                <button type="reset" class="btn btn-warning navbar-btn pull-right">LIMPIAR</button>
+            </div>
+        </nav>
+
+        <div class="container text-center">
+           {% with messages = get_flashed_messages(with_categories=true) %}
+               {% if messages %}
+                  {% for category, message in messages %}
+                    <p class="{{ category }}" style="padding:10px;"><b>{{ message.decode('utf-8') }}</b>.</p>
+                  {% endfor %}
+               {% endif %}
+           {% endwith %}
+
+            <div class="row">
+                {{ form_phonerecharge.csrf_token }}
+                <div class="form-group">
+                    <label for="amount_options" style="display:block;">Selecciona el monto:</label>
+                    <div class="btn-group" data-toggle="buttons">
+                        {% for amount_option in form_phonerecharge.amount_options %}
+                        <label class="btn btn-default">
+                            {{ amount_option(required='required') }} <b>{{ amount_option.label.text }}</b>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_phonerecharge.phone_number(
+                        type='tel', placeholder='Número del cliente', required='required',
+                        class='form-control input-lg', style='text-align:center;', autocomplete='off')
+                    }}
+                </div>
+
+                <br />
+
+                <button type="submit" class="btn btn-primary btn-lg">RECARGAR</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
