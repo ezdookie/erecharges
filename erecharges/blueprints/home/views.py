@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from erecharge.blueprints.home.forms import PhoneRechargeForm
-from erecharge.providers.claro import do_recharge
+from erecharges.blueprints.home.forms import PhoneRechargeForm
+from erecharges.providers.claro import do_recharge
 from flask import render_template, Blueprint, url_for, request, flash
 from werkzeug.utils import redirect
 

@@ -1,1 +1,1 @@
-from erecharge._cliapp import app
+from erecharges._cliapp import app
